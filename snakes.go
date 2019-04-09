@@ -1,3 +1,9 @@
+/* Implement board game known as Chutes & Ladders,
+based on Indian game Snakes & Ladders:
+https://en.wikipedia.org/wiki/Snakes_and_Ladders
+
+Currently single-player mode only with 5x5 board. */
+
 package main
 
 import (
@@ -37,10 +43,7 @@ func main() {
 	fmt.Println("End Chutes")
 }
 
-func getRandNum(upperBound int) int {
-	rand.Seed(time.Now().UnixNano())
-	return rand.Intn(upperBound)
-}
+/* generate & display unique game board */
 
 func getBoard() map[int]int {
 	// generate unique board of 25 spaces total where 15 spaces have secondary move
@@ -94,7 +97,10 @@ func printBoard(board map[int]int, currSpace int) {
 	fmt.Printf("\n\n")
 }
 
+/* generate & process game move */
+
 func rollDie() int {
+	//TODO test & fix range if needed (don't include 0)
 	// hardcode for 6-sided die
 	return getRandNum(7)
 }
@@ -140,6 +146,13 @@ func applyBoardCondition(board map[int]int, currSpace int) int {
 
 func checkForValidMove(move int, currSpace int) bool {
 	return currSpace+move < 25
+}
+
+/* helpers */
+
+func getRandNum(upperBound int) int {
+	rand.Seed(time.Now().UnixNano())
+	return rand.Intn(upperBound)
 }
 
 func abs(x int) int {
