@@ -15,14 +15,16 @@ import (
 )
 
 func main() {
-	scanner := bufio.NewScanner(os.Stdin)
 
-	// initialize board, starting values, and print
-	board := getBoard()
-	currSpace := 1
+	// initialize starting values
+	currSpace := 0
 	rollVal := 0
+
+	// initialize unique game board & print
+	board := getBoard()
 	printBoard(board, currSpace)
 
+	scanner := bufio.NewScanner(os.Stdin)
 	for currSpace < 25 {
 		// roll die
 		fmt.Println("Press enter to roll")
@@ -73,23 +75,29 @@ func getBoard() map[int]int {
 func printBoard(board map[int]int, currSpace int) {
 	fmt.Printf("Current game board:\n")
 
-	// decrementing loop to start at bottom right corner
+	// decrementing loop to print board indices in reverse
 	for i := 25; i > 0; i-- {
 		if i%5 == 0 {
 			fmt.Printf("\n")
 		}
 
-		// X marks current spot of player's piece
+		// 	board legend:
+		// 		X	current space of player's piece
+		// 		+	space with secondary move forward
+		// 		-	space with secondary move back
+		// 		. 	space with no secondary move
+
 		if i == currSpace {
 			fmt.Printf(" X ")
-		} else if key, ok := board[i]; ok {
-			if key > 0 {
-				fmt.Printf(" + ")
-			} else {
-				fmt.Printf(" - ")
-			}
 		} else {
-			fmt.Printf(" . ")
+			val := board[i]
+			if val > 0 {
+				fmt.Printf(" + ")
+			} else if val < 0 {
+				fmt.Printf(" - ")
+			} else {
+				fmt.Printf(" . ")
+			}
 		}
 	}
 
@@ -138,14 +146,15 @@ func applyBoardCondition(board map[int]int, currSpace int) int {
 			fmt.Printf("Secondary move is invalid. Remain on current space.\n")
 		}
 	} else {
-		fmt.Printf("No secondary move. Remain on current space.")
+		fmt.Printf("No secondary move. Remain on current space.\n")
 	}
 
 	return currSpace
+
 }
 
-func checkForValidMove(move int, currSpace int) bool {
-	return currSpace+move < 25
+func checkForValidMove(rollVal int, currSpace int) bool {
+	return rollVal+currSpace < 25
 }
 
 /* helpers */
