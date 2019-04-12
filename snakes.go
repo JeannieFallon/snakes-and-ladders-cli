@@ -114,6 +114,10 @@ func rollDie() int {
 	return getRandNum(7)
 }
 
+func checkForValidMove(rollVal int, currSpace int) bool {
+	return rollVal+currSpace < 25
+}
+
 func applyRoll(rollVal, currSpace int) int {
 	return currSpace + rollVal
 }
@@ -124,7 +128,7 @@ func applySecondaryMove(board map[int]int, currSpace int) int {
 	key := currSpace
 	msg := "Secondary move is"
 
-	// check if current space exists as key and add val to current space if exists
+	// if key exists, add val to current space only if resulting move is valid
 	if secondaryMove, ok := board[key]; ok {
 		if checkForValidMove(secondaryMove, currSpace) {
 			currSpace += secondaryMove
@@ -139,7 +143,8 @@ func applySecondaryMove(board map[int]int, currSpace int) int {
 			} else if secondaryMove > 0 {
 				directionMsg = "FORWARD"
 			}
-			fmt.Printf("This space requires %s move by %d spaces\n", directionMsg, abs(board[key]))
+			msg += " %s by %d spaces.\n"
+			fmt.Printf(msg, directionMsg, abs(board[key]))
 			fmt.Printf("You are now on space: %d\n", currSpace)
 			return currSpace
 		}
@@ -152,10 +157,6 @@ func applySecondaryMove(board map[int]int, currSpace int) int {
 	fmt.Printf(msg)
 
 	return currSpace
-}
-
-func checkForValidMove(rollVal int, currSpace int) bool {
-	return rollVal+currSpace < 25
 }
 
 /* helpers */
