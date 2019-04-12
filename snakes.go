@@ -33,9 +33,10 @@ func main() {
 		fmt.Printf("You rolled: %d\n", rollVal)
 
 		// apply roll if valid, and apply board condition if present
+		//TODO combine valid move check w/ secondary valid move check
 		if checkForValidMove(rollVal, currSpace) {
 			currSpace = applyRoll(rollVal, currSpace)
-			currSpace = applyBoardCondition(board, currSpace)
+			currSpace = applySecondaryMove(board, currSpace)
 		} else {
 			fmt.Printf("Invalid move. Remain on current space and roll again.\n")
 		}
@@ -117,37 +118,48 @@ func applyRoll(rollVal, currSpace int) int {
 	return currSpace + rollVal
 }
 
-func applyBoardCondition(board map[int]int, currSpace int) int {
-	// check if current space exists as key and add val to current space if exists
+func applySecondaryMove(board map[int]int, currSpace int) int {
+	fmt.Printf("You landed on space: %d\n", currSpace)
+
 	key := currSpace
-	if currSpace, ok := board[currSpace]; ok {
-		var directionMsg string
-		var directionEval bool
-		secondaryMove := board[currSpace]
-		// only valid if enough spaces left on board for entire move
+	msg := "Secondary move is"
+
+	// check if current space exists as key and add val to current space if exists
+	if secondaryMove, ok := board[key]; ok {
+		// var secondaryMove int
+		// secondaryMove = board[key]
+
 		if checkForValidMove(secondaryMove, currSpace) {
 			currSpace += secondaryMove
+
 			// reset any negative decrement to starting space
 			if currSpace < 0 {
 				currSpace = 0
 			}
+
 			// set messaging
-			switch directionEval {
-			case secondaryMove < 0:
+			directionMsg := "NO"
+			if secondaryMove < 0 {
 				directionMsg = "BACK"
-			case secondaryMove == 0:
-				directionMsg = "NO"
-			case secondaryMove > 0:
+			} else if secondaryMove > 0 {
 				directionMsg = "FORWARD"
 			}
-			fmt.Printf("You landed on space: %d\n", currSpace)
+
 			fmt.Printf("This space requires %s move by %d spaces\n", directionMsg, abs(board[key]))
-		} else {
-			fmt.Printf("Secondary move is invalid. Remain on current space.\n")
+			fmt.Printf("You are now on space: %d\n", currSpace)
+
+			return currSpace
+
 		}
+
+		msg += " invalid. "
+
 	} else {
-		fmt.Printf("No secondary move. Remain on current space.\n")
+		msg += " not present. "
 	}
+
+	msg += "Remain on current space.\n"
+	fmt.Printf(msg)
 
 	return currSpace
 
