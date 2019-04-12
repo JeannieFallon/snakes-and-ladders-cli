@@ -83,10 +83,10 @@ func printBoard(board map[int]int, currSpace int) {
 		}
 
 		// 	board legend:
-		// 		X	current space of player's piece
-		// 		+	space with secondary move forward
-		// 		-	space with secondary move back
-		// 		. 	space with no secondary move
+		// 	X	current space of player's piece
+		// 	+	space with secondary move forward
+		// 	-	space with secondary move back
+		// 	. 	space with no secondary move
 
 		if i == currSpace {
 			fmt.Printf(" X ")
@@ -126,17 +126,12 @@ func applySecondaryMove(board map[int]int, currSpace int) int {
 
 	// check if current space exists as key and add val to current space if exists
 	if secondaryMove, ok := board[key]; ok {
-		// var secondaryMove int
-		// secondaryMove = board[key]
-
 		if checkForValidMove(secondaryMove, currSpace) {
 			currSpace += secondaryMove
-
 			// reset any negative decrement to starting space
 			if currSpace < 0 {
 				currSpace = 0
 			}
-
 			// set messaging
 			directionMsg := "NO"
 			if secondaryMove < 0 {
@@ -144,16 +139,11 @@ func applySecondaryMove(board map[int]int, currSpace int) int {
 			} else if secondaryMove > 0 {
 				directionMsg = "FORWARD"
 			}
-
 			fmt.Printf("This space requires %s move by %d spaces\n", directionMsg, abs(board[key]))
 			fmt.Printf("You are now on space: %d\n", currSpace)
-
 			return currSpace
-
 		}
-
 		msg += " invalid. "
-
 	} else {
 		msg += " not present. "
 	}
@@ -162,7 +152,6 @@ func applySecondaryMove(board map[int]int, currSpace int) int {
 	fmt.Printf(msg)
 
 	return currSpace
-
 }
 
 func checkForValidMove(rollVal int, currSpace int) bool {
